@@ -1,0 +1,190 @@
+Below is an understanding document for your Selenium with Java code:
+
+
+---
+
+Understanding Document for Selenium with Java Code
+
+Purpose
+
+This Selenium script automates interactions on the FitPeo website, focusing on:
+
+1. Accessing the Revenue Calculator feature.
+
+
+2. Adjusting a slider control.
+
+
+3. Inputting values into a numeric field.
+
+
+4. Selecting specific checkboxes.
+
+
+5. Validating a calculated reimbursement amount.
+
+
+
+
+---
+
+Key Components of the Code
+
+1. Initializing WebDriver
+
+WebDriver driver = new ChromeDriver();
+driver.get("https://www.fitpeo.com/");
+driver.manage().window().maximize();
+
+Purpose: Launches the Chrome browser and navigates to the FitPeo website.
+
+Key Methods:
+
+new ChromeDriver(): Initializes the Chrome browser.
+
+driver.get(): Opens the specified URL.
+
+driver.manage().window().maximize(): Maximizes the browser window.
+
+
+
+
+---
+
+2. Clicking the Revenue Calculator
+
+WebElement RevenueCalc = driver.findElement(By.xpath("//div[@class='MuiBox-root css-70qvj9']//div[text()='Revenue Calculator']"));
+JavascriptExecutor js = (JavascriptExecutor) driver;
+js.executeScript("arguments[0].click()", RevenueCalc);
+Thread.sleep(2000);
+
+Purpose: Clicks the "Revenue Calculator" button.
+
+Key Concepts:
+
+findElement(By.xpath()): Locates the element using its XPath.
+
+JavascriptExecutor: Executes JavaScript code for complex interactions.
+
+Thread.sleep(2000): Introduces a 2-second delay to ensure the element loads.
+
+
+
+
+---
+
+3. Scrolling to the Slider
+
+WebElement ScrollTo = driver.findElement(By.xpath("//div[@class='MuiBox-root css-79elbk']//h4"));
+js.executeScript("arguments[0].scrollIntoView()", ScrollTo);
+
+Purpose: Scrolls the webpage until the slider is visible.
+
+Key Method: scrollIntoView() ensures the specified element is in view.
+
+
+
+---
+
+4. Adjusting the Slider
+
+WebElement Slider = driver.findElement(By.xpath("//div[@class='MuiBox-root css-j7qwjs']//child::span[3]"));
+Actions act = new Actions(driver);
+System.out.println("Sliderlocation: " + Slider.getLocation());
+Thread.sleep(1000);
+act.dragAndDropBy(Slider, 93, 4).perform();
+System.out.println("Sliderlocation: " + Slider.getLocation());
+
+Purpose: Adjusts the slider's position by dragging it to specific coordinates.
+
+Key Concepts:
+
+dragAndDropBy(element, xOffset, yOffset): Moves the element by the specified offsets.
+
+getLocation(): Gets the current location of the element.
+
+
+
+
+---
+
+5. Inputting Values in the Slider Input Box
+
+WebElement SliderInput = driver.findElement(By.xpath("//input[@type='number']"));
+act.click(SliderInput)
+   .keyDown(Keys.CONTROL).sendKeys("A").keyUp(Keys.CONTROL)
+   .keyDown(Keys.BACK_SPACE).keyUp(Keys.BACK_SPACE)
+   .perform();
+Thread.sleep(1000);
+SliderInput.sendKeys("560");
+
+Purpose: Clears the existing value and enters "560" in the slider input box.
+
+Key Methods:
+
+click(): Clicks on the element.
+
+keyDown() and keyUp(): Simulates holding and releasing a key (e.g., CTRL or BACK_SPACE).
+
+sendKeys("560"): Enters the value 560 into the input box.
+
+
+
+
+---
+
+6. Selecting Checkboxes
+
+List<WebElement> Checkboxes = driver.findElements(By.xpath("//input[@class='PrivateSwitchBase-input css-1m9pwf3']"));
+int count = 1;
+for (WebElement checkbox : Checkboxes) {
+    Thread.sleep(1000);
+    if (count == 1 || count == 2 || count == 3 || count == 8) {
+        js.executeScript("arguments[0].click()", checkbox);
+    }
+    count++;
+}
+
+Purpose: Selects specific checkboxes (1st, 2nd, 3rd, and 8th).
+
+Key Concepts:
+
+findElements(): Finds all elements matching the XPath.
+
+Loop logic with if (count == ...): Determines which checkboxes to click.
+
+
+
+
+---
+
+7. Validating Reimbursement Amount
+
+WebElement ReimbursementAmount = driver.findElement(By.xpath("//p[text()='Total Recurring Reimbursement for all Patients Per Month']//following-sibling::p"));
+js.executeScript("arguments[0].scrollIntoView()", ReimbursementAmount);
+System.out.println("Total Recurring Reimbursement for all Patients Per Month: " + ReimbursementAmount.getText());
+if (ReimbursementAmount.getText().equals("$110700")) {
+    System.out.println("Test case passed");
+} else {
+    System.out.println("Test case failed");
+}
+
+Purpose: Checks if the displayed reimbursement amount matches the expected value $110700.
+
+Key Methods:
+
+getText(): Retrieves the visible text of an element.
+
+equals("$110700"): Compares the retrieved value with the expected value.
+
+
+
+
+---
+
+Issues in the UI:
+
+1.  Slider is in multiples of 7 So unable to move to 820 element
+2. The reimbursement amount differs from the one that is mentioned in the document, it differs by $50k.
+
+Please look into the above issues, everything else in the website is good	
